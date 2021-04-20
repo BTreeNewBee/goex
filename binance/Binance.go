@@ -673,3 +673,7 @@ func (bn *Binance) adaptOrder(currencyPair CurrencyPair, orderMap map[string]int
 		FinishedTime: ToInt64(orderMap["updateTime"]),
 	}
 }
+
+func (hbpro *Binance) GetAllCurrencyPair() ([]CurrencyPair, error) {
+	return nil, nil
+}

@@ -769,3 +769,27 @@ func (hbpro *HuoBiPro) GetCurrenciesPrecision() ([]HuoBiProSymbol, error) {
 	//fmt.Println(Symbols)
 	return Symbols, nil
 }
+
+func (hbpro *HuoBiPro) GetAllCurrencyPair() ([]CurrencyPair, error) {
+	url := hbpro.baseUrl + "/v1/common/symbols"
+
+	ret, err := HttpGet(hbpro.httpClient, url)
+	if err != nil {
+		return nil, err
+	}
+
+	data, ok := ret["data"].([]interface{})
+	if !ok {
+		return nil, errors.New("response format error")
+	}
+	var currencyPairs []CurrencyPair
+	for _, v := range data {
+		_sym := v.(map[string]interface{})
+		var currencyPair CurrencyPair
+		baseCurrency := NewCurrency(_sym["base-currency"].(string), "")
+		quoteCurrency := NewCurrency(_sym["quote-currency"].(string), "")
+		currencyPair = NewCurrencyPair(baseCurrency,quoteCurrency)
+		currencyPairs = append(currencyPairs, currencyPair)
+	}
+	return currencyPairs, nil
+}

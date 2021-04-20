@@ -20,4 +20,6 @@ type API interface {
 	GetTrades(currencyPair CurrencyPair, since int64) ([]Trade, error)
 
 	GetExchangeName() string
+
+	GetAllCurrencyPair() ([]CurrencyPair, error)
 }
