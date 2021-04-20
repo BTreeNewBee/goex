@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	. "github.com/nntaoli-project/goex"
+	. "github.com/BTreeNewBee/goex"
 )
 
 const subscribe = "subscribe"

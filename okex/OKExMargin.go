@@ -1,9 +1,9 @@
 package okex
 
 import (
-	"fmt"
-	. "github.com/nntaoli-project/goex"
 	"errors"
+	"fmt"
+	. "github.com/BTreeNewBee/goex"
 	"strings"
 )
 

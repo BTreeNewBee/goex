@@ -1,7 +1,7 @@
 package binance
 
 import (
-	"github.com/nntaoli-project/goex"
+	"github.com/BTreeNewBee/goex"
 	"log"
 	"os"
 	"testing"

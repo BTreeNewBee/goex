@@ -2,9 +2,9 @@ package okex
 
 import (
 	"fmt"
+	. "github.com/BTreeNewBee/goex"
+	"github.com/BTreeNewBee/goex/internal/logger"
 	"github.com/go-openapi/errors"
-	. "github.com/nntaoli-project/goex"
-	"github.com/nntaoli-project/goex/internal/logger"
 	"net/url"
 	"sort"
 	"strings"

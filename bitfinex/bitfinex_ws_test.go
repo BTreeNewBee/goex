@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nntaoli-project/goex"
+	"github.com/BTreeNewBee/goex"
 )
 
 func TestNewBitfinexWs(t *testing.T) {
@@ -34,6 +34,6 @@ func TestNewBitfinexWs(t *testing.T) {
 
 	//Candles
 	t.Log(bitfinexWs.SubscribeCandle(goex.BTC_USD, goex.KLINE_PERIOD_1MIN))
-	
+
 	time.Sleep(time.Minute)
 }

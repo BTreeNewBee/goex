@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	. "github.com/nntaoli-project/goex"
-	"github.com/nntaoli-project/goex/internal/logger"
+	. "github.com/BTreeNewBee/goex"
+	"github.com/BTreeNewBee/goex/internal/logger"
 	"strings"
 	"sync"
 	"time"
@@ -145,7 +145,7 @@ func (hbdmWs *HbdmWs) handle(msg []byte) error {
 		hbdmWs.wsConn.SendMessage(pong)
 		return nil
 	}
-	
+
 	var resp WsResponse
 	err := json.Unmarshal(msg, &resp)
 	if err != nil {

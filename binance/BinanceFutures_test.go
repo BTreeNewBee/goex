@@ -1,8 +1,8 @@
 package binance
 
 import (
-	"github.com/nntaoli-project/goex"
-	"github.com/nntaoli-project/goex/internal/logger"
+	"github.com/BTreeNewBee/goex"
+	"github.com/BTreeNewBee/goex/internal/logger"
 	"net/http"
 	"testing"
 )
@@ -61,5 +61,5 @@ func TestBinanceFutures_GetFuturePosition(t *testing.T) {
 }
 
 func TestBinanceFutures_GetUnfinishFutureOrders(t *testing.T) {
-	t.Log(baDapi.GetUnfinishFutureOrders(goex.BTC_USD , goex.QUARTER_CONTRACT))
+	t.Log(baDapi.GetUnfinishFutureOrders(goex.BTC_USD, goex.QUARTER_CONTRACT))
 }

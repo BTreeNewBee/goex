@@ -1,8 +1,8 @@
 package bitmex
 
 import (
-	"github.com/nntaoli-project/goex"
-	"github.com/nntaoli-project/goex/internal/logger"
+	"github.com/BTreeNewBee/goex"
+	"github.com/BTreeNewBee/goex/internal/logger"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"net/http"

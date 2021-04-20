@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/nntaoli-project/goex"
-	. "github.com/nntaoli-project/goex/internal/logger"
+	. "github.com/BTreeNewBee/goex"
+	. "github.com/BTreeNewBee/goex/internal/logger"
 )
 
 var HBPOINT = NewCurrency("HBPOINT", "")
@@ -788,7 +788,7 @@ func (hbpro *HuoBiPro) GetAllCurrencyPair() ([]CurrencyPair, error) {
 		var currencyPair CurrencyPair
 		baseCurrency := NewCurrency(_sym["base-currency"].(string), "")
 		quoteCurrency := NewCurrency(_sym["quote-currency"].(string), "")
-		currencyPair = NewCurrencyPair(baseCurrency,quoteCurrency)
+		currencyPair = NewCurrencyPair(baseCurrency, quoteCurrency)
 		currencyPairs = append(currencyPairs, currencyPair)
 	}
 	return currencyPairs, nil

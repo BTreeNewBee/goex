@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	. "github.com/nntaoli-project/goex"
-	"github.com/nntaoli-project/goex/internal/logger"
+	. "github.com/BTreeNewBee/goex"
+	"github.com/BTreeNewBee/goex/internal/logger"
 )
 
 //合约信息

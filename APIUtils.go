@@ -3,7 +3,7 @@ package goex
 import (
 	"errors"
 	"fmt"
-	"github.com/nntaoli-project/goex/internal/logger"
+	"github.com/BTreeNewBee/goex/internal/logger"
 	"reflect"
 	"time"
 )
@@ -115,7 +115,7 @@ func CancelAllUnfinishedFutureOrders(api FutureRestAPI, contractType string, cur
 		logger.Log.Error("api instance is nil ??? , please new a api instance")
 		return 0
 	}
-	
+
 	c := 0
 
 	for {

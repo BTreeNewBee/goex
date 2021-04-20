@@ -1,7 +1,7 @@
 package huobi
 
 import (
-	"github.com/nntaoli-project/goex"
+	"github.com/BTreeNewBee/goex"
 	"log"
 	"testing"
 	"time"
