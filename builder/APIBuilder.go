@@ -5,31 +5,17 @@ import (
 	"errors"
 	"fmt"
 	. "github.com/BTreeNewBee/goex"
-	"github.com/BTreeNewBee/goex/bigone"
 	"github.com/BTreeNewBee/goex/binance"
-	"github.com/BTreeNewBee/goex/bitfinex"
-	"github.com/BTreeNewBee/goex/bithumb"
 	"github.com/BTreeNewBee/goex/bitmex"
-	"github.com/BTreeNewBee/goex/bitstamp"
-	"github.com/BTreeNewBee/goex/bittrex"
 	"github.com/BTreeNewBee/goex/coinbene"
-	"github.com/BTreeNewBee/goex/kucoin"
-
-	"github.com/BTreeNewBee/goex/atop"
 	//"github.com/BTreeNewBee/goex/coin58"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/BTreeNewBee/goex/coinex"
-	"github.com/BTreeNewBee/goex/gdax"
-	"github.com/BTreeNewBee/goex/hitbtc"
 	"github.com/BTreeNewBee/goex/huobi"
-	"github.com/BTreeNewBee/goex/kraken"
 	"github.com/BTreeNewBee/goex/okex"
-	"github.com/BTreeNewBee/goex/poloniex"
-	"github.com/BTreeNewBee/goex/zb"
 )
 
 type APIBuilder struct {
@@ -189,16 +175,16 @@ func (builder *APIBuilder) Endpoint(endpoint string) (_builer *APIBuilder) {
 func (builder *APIBuilder) Build(exName string) (api API) {
 	var _api API
 	switch exName {
-	case KUCOIN:
-		_api = kucoin.New(builder.apiKey, builder.secretkey, builder.apiPassphrase)
-	//case OKCOIN_CN:
-	//	_api = okcoin.New(builder.client, builder.apiKey, builder.secretkey)
-	case POLONIEX:
-		_api = poloniex.New(builder.client, builder.apiKey, builder.secretkey)
-	//case OKCOIN_COM:
-	//	_api = okcoin.NewCOM(builder.client, builder.apiKey, builder.secretkey)
-	case BITSTAMP:
-		_api = bitstamp.NewBitstamp(builder.client, builder.apiKey, builder.secretkey, builder.clientId)
+	//case KUCOIN:
+	//	_api = kucoin.New(builder.apiKey, builder.secretkey, builder.apiPassphrase)
+	////case OKCOIN_CN:
+	////	_api = okcoin.New(builder.client, builder.apiKey, builder.secretkey)
+	//case POLONIEX:
+	//	_api = poloniex.New(builder.client, builder.apiKey, builder.secretkey)
+	////case OKCOIN_COM:
+	////	_api = okcoin.NewCOM(builder.client, builder.apiKey, builder.secretkey)
+	//case BITSTAMP:
+	//	_api = bitstamp.NewBitstamp(builder.client, builder.apiKey, builder.secretkey, builder.clientId)
 	case HUOBI_PRO:
 		//_api = huobi.NewHuoBiProSpot(builder.client, builder.apiKey, builder.secretkey)
 		_api = huobi.NewHuobiWithConfig(&APIConfig{
@@ -206,18 +192,18 @@ func (builder *APIBuilder) Build(exName string) (api API) {
 			Endpoint:     builder.endPoint,
 			ApiKey:       builder.apiKey,
 			ApiSecretKey: builder.secretkey})
-	case OKEX_V3, OKEX:
-		_api = okex.NewOKEx(&APIConfig{
-			HttpClient:    builder.client,
-			ApiKey:        builder.apiKey,
-			ApiSecretKey:  builder.secretkey,
-			ApiPassphrase: builder.apiPassphrase,
-			Endpoint:      builder.endPoint,
-		})
-	case BITFINEX:
-		_api = bitfinex.New(builder.client, builder.apiKey, builder.secretkey)
-	case KRAKEN:
-		_api = kraken.New(builder.client, builder.apiKey, builder.secretkey)
+	//case OKEX_V3, OKEX:
+	//	_api = okex.NewOKEx(&APIConfig{
+	//		HttpClient:    builder.client,
+	//		ApiKey:        builder.apiKey,
+	//		ApiSecretKey:  builder.secretkey,
+	//		ApiPassphrase: builder.apiPassphrase,
+	//		Endpoint:      builder.endPoint,
+	//	})
+	//case BITFINEX:
+	//	_api = bitfinex.New(builder.client, builder.apiKey, builder.secretkey)
+	//case KRAKEN:
+	//	_api = kraken.New(builder.client, builder.apiKey, builder.secretkey)
 	case BINANCE:
 		//_api = binance.New(builder.client, builder.apiKey, builder.secretkey)
 		_api = binance.NewWithConfig(&APIConfig{
@@ -225,22 +211,22 @@ func (builder *APIBuilder) Build(exName string) (api API) {
 			Endpoint:     builder.endPoint,
 			ApiKey:       builder.apiKey,
 			ApiSecretKey: builder.secretkey})
-	case BITTREX:
-		_api = bittrex.New(builder.client, builder.apiKey, builder.secretkey)
-	case BITHUMB:
-		_api = bithumb.New(builder.client, builder.apiKey, builder.secretkey)
-	case GDAX:
-		_api = gdax.New(builder.client, builder.apiKey, builder.secretkey)
-	case ZB:
-		_api = zb.New(builder.client, builder.apiKey, builder.secretkey)
-	case COINEX:
-		_api = coinex.New(builder.client, builder.apiKey, builder.secretkey)
-	case BIGONE:
-		_api = bigone.New(builder.client, builder.apiKey, builder.secretkey)
-	case HITBTC:
-		_api = hitbtc.New(builder.client, builder.apiKey, builder.secretkey)
-	case ATOP:
-		_api = atop.New(builder.client, builder.apiKey, builder.secretkey)
+	//case BITTREX:
+	//	_api = bittrex.New(builder.client, builder.apiKey, builder.secretkey)
+	//case BITHUMB:
+	//	_api = bithumb.New(builder.client, builder.apiKey, builder.secretkey)
+	//case GDAX:
+	//	_api = gdax.New(builder.client, builder.apiKey, builder.secretkey)
+	//case ZB:
+	//	_api = zb.New(builder.client, builder.apiKey, builder.secretkey)
+	//case COINEX:
+	//	_api = coinex.New(builder.client, builder.apiKey, builder.secretkey)
+	//case BIGONE:
+	//	_api = bigone.New(builder.client, builder.apiKey, builder.secretkey)
+	//case HITBTC:
+	//	_api = hitbtc.New(builder.client, builder.apiKey, builder.secretkey)
+	//case ATOP:
+	//	_api = atop.New(builder.client, builder.apiKey, builder.secretkey)
 	default:
 		println("exchange name error [" + exName + "].")
 
