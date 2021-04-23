@@ -22,4 +22,6 @@ type API interface {
 	GetExchangeName() string
 
 	GetAllCurrencyPair() ([]CurrencyPair, error)
+
+	GetTimestamp() (int64, error)
 }

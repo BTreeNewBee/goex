@@ -16,7 +16,7 @@ var httpProxyClient = &http.Client{
 		Proxy: func(req *http.Request) (*url.URL, error) {
 			return &url.URL{
 				Scheme: "socks5",
-				Host:   "127.0.0.1:1080"}, nil
+				Host:   "127.0.0.1:2341"}, nil
 		},
 		Dial: (&net.Dialer{
 			Timeout: 10 * time.Second,
@@ -138,4 +138,8 @@ func TestHuobiPro_GetCurrenciesList(t *testing.T) {
 func TestHuobiPro_GetCurrenciesPrecision(t *testing.T) {
 	//return
 	t.Log(hbpro.GetCurrenciesPrecision())
+}
+
+func TestHuobiPro_GetTimestamp(t *testing.T) {
+	t.Log(hbpro.GetTimestamp())
 }

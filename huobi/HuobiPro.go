@@ -793,3 +793,16 @@ func (hbpro *HuoBiPro) GetAllCurrencyPair() ([]CurrencyPair, error) {
 	}
 	return currencyPairs, nil
 }
+
+func (hbpro *HuoBiPro) GetTimestamp() (int64, error) {
+	url := hbpro.baseUrl + "/v1/common/timestamp"
+	ret, err := HttpGet(hbpro.httpClient, url)
+	if err != nil {
+		return 0, err
+	}
+	data, ok := ret["data"].(int64)
+	if !ok {
+		return 0, err
+	}
+	return data, nil
+}
