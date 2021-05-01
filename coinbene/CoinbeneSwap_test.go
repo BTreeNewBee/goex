@@ -15,7 +15,7 @@ var (
 			Proxy: func(req *http.Request) (*url.URL, error) {
 				return &url.URL{
 					Scheme: "socks5",
-					Host:   "127.0.0.1:1080"}, nil
+					Host:   "127.0.0.1:2341"}, nil
 			},
 			Dial: (&net.Dialer{
 				Timeout: 10 * time.Second,

@@ -327,6 +327,22 @@ func (builder *APIBuilder) BuildFuturesWs(exName string) (FuturesWsApi, error) {
 	return nil, errors.New("not support the exchange " + exName)
 }
 
+func (builder *APIBuilder) BuildLinearFuture(exName string) (api FutureRestAPI) {
+	switch exName {
+	case HBDM_LINEAR_SWAP:
+		return huobi.NewHbdmLinearSwap(&APIConfig{
+			HttpClient:   builder.client,
+			Endpoint:     builder.endPoint,
+			ApiKey:       builder.apiKey,
+			ApiSecretKey: builder.secretkey,
+		})
+	default:
+		println(fmt.Sprintf("%s not support future", exName))
+		return nil
+	}
+}
+
+
 func (builder *APIBuilder) BuildSpotWs(exName string) (SpotWsApi, error) {
 	switch exName {
 	case OKEX_V3, OKEX:

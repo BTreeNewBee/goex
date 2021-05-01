@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewSpotWs(t *testing.T) {
-	os.Setenv("HTTPS_PROXY", "socks5://127.0.0.1:1080")
+	os.Setenv("HTTPS_PROXY", "socks5://127.0.0.1:2341")
 	spotWs := NewSpotWs()
 	spotWs.DepthCallback(func(depth *goex.Depth) {
 		t.Log("asks=", depth.AskList)

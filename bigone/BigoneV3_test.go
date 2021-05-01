@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var proxy = "socks5://127.0.0.1:1080"
+var proxy = "socks5://127.0.0.1:2341"
 
 var httpProxyClient = &http.Client{
 	Transport: &http.Transport{

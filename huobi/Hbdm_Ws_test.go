@@ -9,7 +9,7 @@ import (
 
 func TestNewHbdmWs(t *testing.T) {
 	ws := NewHbdmWs()
-	ws.ProxyUrl("socks5://127.0.0.1:1080")
+	ws.ProxyUrl("socks5://127.0.0.1:2341")
 
 	ws.SetCallbacks(func(ticker *goex.FutureTicker) {
 		log.Println(ticker.Ticker)
@@ -24,7 +24,7 @@ func TestNewHbdmWs(t *testing.T) {
 	})
 
 	t.Log(ws.SubscribeTicker(goex.BTC_USD, goex.QUARTER_CONTRACT))
-	t.Log(ws.SubscribeDepth(goex.BTC_USD, goex.NEXT_WEEK_CONTRACT, 0))
+	//t.Log(ws.SubscribeDepth(goex.BTC_USD, goex.NEXT_WEEK_CONTRACT, 0))
 	t.Log(ws.SubscribeTrade(goex.LTC_USD, goex.THIS_WEEK_CONTRACT))
 	time.Sleep(time.Minute)
 }

@@ -14,7 +14,7 @@ var bs = NewBinanceSwap(&goex.APIConfig{
 	HttpClient: &http.Client{
 		Transport: &http.Transport{
 			Proxy: func(req *http.Request) (*url.URL, error) {
-				return url.Parse("socks5://127.0.0.1:1080")
+				return url.Parse("socks5://127.0.0.1:2341")
 				return nil, nil
 			},
 			Dial: (&net.Dialer{

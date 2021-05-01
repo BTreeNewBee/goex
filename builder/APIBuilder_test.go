@@ -28,7 +28,7 @@ func TestAPIBuilder_Build(t *testing.T) {
 }
 
 func TestAPIBuilder_BuildSpotWs(t *testing.T) {
-	//os.Setenv("HTTPS_PROXY" , "socks5://127.0.0.1:1080")
+	//os.Setenv("HTTPS_PROXY" , "socks5://127.0.0.1:2341")
 	wsApi, _ := builder.BuildSpotWs(goex.OKEX_V3)
 	wsApi.DepthCallback(func(depth *goex.Depth) {
 		log.Println(depth)
@@ -38,7 +38,7 @@ func TestAPIBuilder_BuildSpotWs(t *testing.T) {
 }
 
 func TestAPIBuilder_BuildFuturesWs(t *testing.T) {
-	//os.Setenv("HTTPS_PROXY" , "socks5://127.0.0.1:1080")
+	//os.Setenv("HTTPS_PROXY" , "socks5://127.0.0.1:2341")
 	wsApi, _ := builder.BuildFuturesWs(goex.OKEX_V3)
 	wsApi.DepthCallback(func(depth *goex.Depth) {
 		log.Println(depth)

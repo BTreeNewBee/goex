@@ -40,7 +40,7 @@ func TestNewWsConn(t *testing.T) {
 	//fmt.Println(err, string(ping3))
 
 	ws := NewWsBuilder().Dump().WsUrl("wss://api.fcoin.com/v2/ws").
-		ProxyUrl("socks5://127.0.0.1:1080").AutoReconnect().
+		ProxyUrl("socks5://127.0.0.1:2341").AutoReconnect().
 		Heartbeat(heartbeatFunc, 5*time.Second).ProtoHandleFunc(ProtoHandle).Build()
 	t.Log(ws.Subscribe(map[string]string{
 		//"cmd":"sub", "args":"[\"ticker.btcusdt\"]", "id": clientId}))

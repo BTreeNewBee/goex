@@ -1,162 +1,47 @@
 package huobi
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	. "github.com/BTreeNewBee/goex"
 	"github.com/BTreeNewBee/goex/internal/logger"
 	"net/url"
-	"sort"
 	"time"
 )
 
-type HbdmSwap struct {
+type HbdmLinearSwap struct {
 	base *Hbdm
 	c    *APIConfig
 }
 
 const (
-	getSwapContractInfoApiPath = "/swap-ex/v1/swap_contract_info"
-	tickerApiPath              = "/swap-ex/market/detail/merged"
-	marketApiPath              = "/swap-ex/market/depth"
-	klineApiPath               = "/swap-api/market/history/kline"
-	accountApiPath             = "/swap-api/v1/swap_account_info"
-	placeOrderApiPath          = "/swap-api/v1/swap_order"
-	getPositionApiPath         = "/swap-api/v1/swap_position_info"
-	cancelOrderApiPath         = "/swap-api/v1/swap_cancel"
-	getOpenOrdersApiPath       = "/swap-api/v1/swap_openorders"
-	getOrderInfoApiPath        = "/swap-api/v1/swap_order_info"
-	getHistoryOrderPath        = "/swap-api/v1/swap_hisorders_exact"
+	linearAccountApiPath = "/linear-swap-api/v1/swap_account_info"
 )
 
-func NewHbdmSwap(c *APIConfig) *HbdmSwap {
+func NewHbdmLinearSwap(c *APIConfig) *HbdmLinearSwap {
 	if c.Lever <= 0 {
 		c.Lever = 10
 	}
 
-	return &HbdmSwap{
+	return &HbdmLinearSwap{
 		base: NewHbdm(c),
 		c:    c,
 	}
 }
 
-func (swap *HbdmSwap) GetExchangeName() string {
+func (swap *HbdmLinearSwap) GetExchangeName() string {
 	return HBDM_SWAP
 }
 
-func (swap *HbdmSwap) GetFutureTicker(currencyPair CurrencyPair, contractType string) (*Ticker, error) {
-	tickerUrl := fmt.Sprintf("%s%s?contract_code=%s", swap.base.config.Endpoint, tickerApiPath, currencyPair.ToSymbol("-"))
-	responseBody, err := HttpGet5(swap.base.config.HttpClient, tickerUrl, map[string]string{})
-	if err != nil {
-		return nil, err
-	}
-	logger.Debugf("response body: %s", string(responseBody))
-
-	var (
-		tickResponse struct {
-			BaseResponse
-			Tick struct {
-				Id     int64     `json:"id"`
-				Vol    float64   `json:"vol,string"`
-				Count  int64     `json:"count"`
-				Open   float64   `json:"open,string"`
-				Close  float64   `json:"close,string"`
-				Low    float64   `json:"low,string"`
-				High   float64   `json:"high,string"`
-				Amount float64   `json:"amount,string"`
-				Ask    []float64 `json:"ask"`
-				Bid    []float64 `json:"bid"`
-				Ts     int64     `json:"ts"`
-			} `json:"tick"`
-		}
-	)
-
-	err = json.Unmarshal(responseBody, &tickResponse)
-	if err != nil {
-		return nil, err
-	}
-
-	if tickResponse.Status != "ok" {
-		return nil, errors.New(string(responseBody))
-	}
-
-	return &Ticker{
-		Pair: currencyPair,
-		Last: 0,
-		Buy:  tickResponse.Tick.Bid[0],
-		Sell: tickResponse.Tick.Ask[0],
-		High: tickResponse.Tick.High,
-		Low:  tickResponse.Tick.Low,
-		Vol:  tickResponse.Tick.Vol,
-		Date: uint64(tickResponse.Tick.Ts),
-	}, nil
+func (swap *HbdmLinearSwap) GetFutureTicker(currencyPair CurrencyPair, contractType string) (*Ticker, error) {
+	return nil, errors.New("not implement")
 }
 
-func (swap *HbdmSwap) GetFutureDepth(currencyPair CurrencyPair, contractType string, size int) (*Depth, error) {
-	step := 0
-	if size <= 20 {
-		step = 6
-	}
-	depthUrl := fmt.Sprintf("%s%s?contract_code=%s&type=step%d", swap.base.config.Endpoint, marketApiPath, currencyPair.ToSymbol("-"), step)
-	responseBody, err := HttpGet5(swap.base.config.HttpClient, depthUrl, map[string]string{})
-	if err != nil {
-		return nil, err
-	}
-	logger.Debugf("response body: %s", string(responseBody))
-
-	var (
-		dep          Depth
-		tickResponse struct {
-			BaseResponse
-			Tick struct {
-				Id   int64           `json:"id"`
-				Ts   int64           `json:"ts"`
-				Bids [][]interface{} `json:"bids"`
-				Asks [][]interface{} `json:"asks"`
-			} `json:"tick"`
-		}
-	)
-
-	err = json.Unmarshal(responseBody, &tickResponse)
-	if err != nil {
-		return nil, err
-	}
-
-	if tickResponse.Status != "ok" {
-		return nil, errors.New(string(responseBody))
-	}
-
-	dep.Pair = currencyPair
-	dep.ContractType = contractType
-	dep.UTime = time.Unix(0, tickResponse.Ts*int64(time.Millisecond))
-
-	for i, item := range tickResponse.Tick.Bids {
-		if i >= size {
-			break
-		}
-		dep.BidList = append(dep.BidList, DepthRecord{
-			Price:  ToFloat64(item[0]),
-			Amount: ToFloat64(item[1]),
-		})
-	}
-
-	for i, item := range tickResponse.Tick.Asks {
-		if i >= size {
-			break
-		}
-		dep.AskList = append(dep.AskList, DepthRecord{
-			Price:  ToFloat64(item[0]),
-			Amount: ToFloat64(item[1]),
-		})
-	}
-
-	sort.Sort(sort.Reverse(dep.AskList))
-
-	return &dep, nil
+func (swap *HbdmLinearSwap) GetFutureDepth(currencyPair CurrencyPair, contractType string, size int) (*Depth, error) {
+	return nil, errors.New("not implement")
 }
 
-func (swap *HbdmSwap) GetFutureUserinfo(currencyPair ...CurrencyPair) (*FutureAccount, error) {
+func (swap *HbdmLinearSwap) GetFutureUserinfo(currencyPair ...CurrencyPair) (*FutureAccount, error) {
 	var accountInfoResponse []struct {
 		Symbol           string  `json:"symbol"`
 		MarginBalance    float64 `json:"margin_balance"`
@@ -174,7 +59,7 @@ func (swap *HbdmSwap) GetFutureUserinfo(currencyPair ...CurrencyPair) (*FutureAc
 		param.Set("contract_code", currencyPair[0].ToSymbol("-"))
 	}
 
-	err := swap.base.doRequest(accountApiPath, &param, &accountInfoResponse)
+	err := swap.base.doRequest(linearAccountApiPath, &param, &accountInfoResponse)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +82,7 @@ func (swap *HbdmSwap) GetFutureUserinfo(currencyPair ...CurrencyPair) (*FutureAc
 	return &futureAccount, nil
 }
 
-func (swap *HbdmSwap) PlaceFutureOrder(currencyPair CurrencyPair, contractType, price, amount string, openType, matchPrice int, leverRate float64) (string, error) {
+func (swap *HbdmLinearSwap) PlaceFutureOrder(currencyPair CurrencyPair, contractType, price, amount string, openType, matchPrice int, leverRate float64) (string, error) {
 	param := url.Values{}
 	param.Set("contract_code", currencyPair.ToSymbol("-"))
 	param.Set("client_order_id", fmt.Sprint(time.Now().UnixNano()))
@@ -229,7 +114,7 @@ func (swap *HbdmSwap) PlaceFutureOrder(currencyPair CurrencyPair, contractType, 
 	return orderResponse.OrderId, nil
 }
 
-func (swap *HbdmSwap) LimitFuturesOrder(currencyPair CurrencyPair, contractType, price, amount string, openType int, opt ...LimitOrderOptionalParameter) (*FutureOrder, error) {
+func (swap *HbdmLinearSwap) LimitFuturesOrder(currencyPair CurrencyPair, contractType, price, amount string, openType int, opt ...LimitOrderOptionalParameter) (*FutureOrder, error) {
 	orderId, err := swap.PlaceFutureOrder(currencyPair, contractType, price, amount, openType, 0, swap.c.Lever)
 	return &FutureOrder{
 		Currency:     currencyPair,
@@ -241,7 +126,7 @@ func (swap *HbdmSwap) LimitFuturesOrder(currencyPair CurrencyPair, contractType,
 	}, err
 }
 
-func (swap *HbdmSwap) MarketFuturesOrder(currencyPair CurrencyPair, contractType, amount string, openType int) (*FutureOrder, error) {
+func (swap *HbdmLinearSwap) MarketFuturesOrder(currencyPair CurrencyPair, contractType, amount string, openType int) (*FutureOrder, error) {
 	orderId, err := swap.PlaceFutureOrder(currencyPair, contractType, "", amount, openType, 1, 10)
 	return &FutureOrder{
 		Currency:     currencyPair,
@@ -252,7 +137,7 @@ func (swap *HbdmSwap) MarketFuturesOrder(currencyPair CurrencyPair, contractType
 	}, err
 }
 
-func (swap *HbdmSwap) FutureCancelOrder(currencyPair CurrencyPair, contractType, orderId string) (bool, error) {
+func (swap *HbdmLinearSwap) FutureCancelOrder(currencyPair CurrencyPair, contractType, orderId string) (bool, error) {
 	param := url.Values{}
 	param.Set("order_id", orderId)
 	param.Set("contract_code", currencyPair.ToSymbol("-"))
@@ -276,7 +161,7 @@ func (swap *HbdmSwap) FutureCancelOrder(currencyPair CurrencyPair, contractType,
 	return true, nil
 }
 
-func (swap *HbdmSwap) GetFuturePosition(currencyPair CurrencyPair, contractType string) ([]FuturePosition, error) {
+func (swap *HbdmLinearSwap) GetFuturePosition(currencyPair CurrencyPair, contractType string) ([]FuturePosition, error) {
 	param := url.Values{}
 	param.Set("contract_code", currencyPair.ToSymbol("-"))
 
@@ -340,11 +225,11 @@ func (swap *HbdmSwap) GetFuturePosition(currencyPair CurrencyPair, contractType 
 	return futuresPositions, nil
 }
 
-func (swap *HbdmSwap) GetFutureOrders(orderIds []string, currencyPair CurrencyPair, contractType string) ([]FutureOrder, error) {
+func (swap *HbdmLinearSwap) GetFutureOrders(orderIds []string, currencyPair CurrencyPair, contractType string) ([]FutureOrder, error) {
 	return nil, nil
 }
 
-func (swap *HbdmSwap) GetFutureOrder(orderId string, currencyPair CurrencyPair, contractType string) (*FutureOrder, error) {
+func (swap *HbdmLinearSwap) GetFutureOrder(orderId string, currencyPair CurrencyPair, contractType string) (*FutureOrder, error) {
 	var (
 		orderInfoResponse []OrderInfo
 		param             = url.Values{}
@@ -382,7 +267,7 @@ func (swap *HbdmSwap) GetFutureOrder(orderId string, currencyPair CurrencyPair, 
 	}, nil
 }
 
-func (swap *HbdmSwap) GetFutureOrderHistory(pair CurrencyPair, contractType string, optional ...OptionalParameter) ([]FutureOrder, error) {
+func (swap *HbdmLinearSwap) GetFutureOrderHistory(pair CurrencyPair, contractType string, optional ...OptionalParameter) ([]FutureOrder, error) {
 	params := url.Values{}
 	params.Add("status", "0")     //all
 	params.Add("type", "1")       //all
@@ -430,7 +315,7 @@ func (swap *HbdmSwap) GetFutureOrderHistory(pair CurrencyPair, contractType stri
 	return historyOrders, nil
 }
 
-func (swap *HbdmSwap) GetUnfinishFutureOrders(currencyPair CurrencyPair, contractType string) ([]FutureOrder, error) {
+func (swap *HbdmLinearSwap) GetUnfinishFutureOrders(currencyPair CurrencyPair, contractType string) ([]FutureOrder, error) {
 	param := url.Values{}
 	param.Set("contract_code", currencyPair.ToSymbol("-"))
 	param.Set("page_size", "50")
@@ -466,7 +351,7 @@ func (swap *HbdmSwap) GetUnfinishFutureOrders(currencyPair CurrencyPair, contrac
 	return openOrders, nil
 }
 
-func (swap *HbdmSwap) GetContractValue(currencyPair CurrencyPair) (float64, error) {
+func (swap *HbdmLinearSwap) GetContractValue(currencyPair CurrencyPair) (float64, error) {
 	switch currencyPair {
 	case BTC_USD, BTC_USDT:
 		return 100, nil
@@ -475,26 +360,26 @@ func (swap *HbdmSwap) GetContractValue(currencyPair CurrencyPair) (float64, erro
 	}
 }
 
-func (swap *HbdmSwap) GetKlineRecords(contractType string, currency CurrencyPair, period KlinePeriod, size int, opt ...OptionalParameter) ([]FutureKline, error) {
+func (swap *HbdmLinearSwap) GetKlineRecords(contractType string, currency CurrencyPair, period KlinePeriod, size int, opt ...OptionalParameter) ([]FutureKline, error) {
 	panic("not implement")
 }
 
-func (swap *HbdmSwap) GetTrades(contractType string, currencyPair CurrencyPair, since int64) ([]Trade, error) {
+func (swap *HbdmLinearSwap) GetTrades(contractType string, currencyPair CurrencyPair, since int64) ([]Trade, error) {
 	panic("not implement")
 }
 
-func (swap *HbdmSwap) GetFee() (float64, error) {
+func (swap *HbdmLinearSwap) GetFee() (float64, error) {
 	panic("not implement")
 }
 
-func (swap *HbdmSwap) GetFutureIndex(currencyPair CurrencyPair) (float64, error) {
+func (swap *HbdmLinearSwap) GetFutureIndex(currencyPair CurrencyPair) (float64, error) {
 	panic("not implement")
 }
 
-func (swap *HbdmSwap) GetDeliveryTime() (int, int, int, int) {
+func (swap *HbdmLinearSwap) GetDeliveryTime() (int, int, int, int) {
 	panic("not implement")
 }
 
-func (swap *HbdmSwap) GetFutureEstimatedPrice(currencyPair CurrencyPair) (float64, error) {
+func (swap *HbdmLinearSwap) GetFutureEstimatedPrice(currencyPair CurrencyPair) (float64, error) {
 	panic("not implement")
 }

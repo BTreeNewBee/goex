@@ -13,7 +13,7 @@ func init() {
 }
 
 func TestNewOKExSpotV3Ws(t *testing.T) {
-	os.Setenv("HTTPS_PROXY", "socks5://127.0.0.1:1080")
+	os.Setenv("HTTPS_PROXY", "socks5://127.0.0.1:2341")
 	okexSpotV3Ws := okex.OKExV3SpotWs
 	okexSpotV3Ws.TickerCallback(func(ticker *goex.Ticker) {
 		t.Log(ticker)
