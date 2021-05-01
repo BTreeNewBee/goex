@@ -93,3 +93,7 @@ func TestBinance_GetOrderHistorys(t *testing.T) {
 			Optional("startTime", "1607656034333").
 			Optional("limit", "5")))
 }
+
+func TestBinance_GetTimestamp(t *testing.T) {
+	t.Log(ba.GetTimestamp())
+}

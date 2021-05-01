@@ -677,3 +677,16 @@ func (bn *Binance) adaptOrder(currencyPair CurrencyPair, orderMap map[string]int
 func (hbpro *Binance) GetAllCurrencyPair() ([]CurrencyPair, error) {
 	return nil, errors.New("not implement")
 }
+
+func (hbpro *Binance) GetTimestamp() (int64, error) {
+	url := hbpro.baseUrl + "/api/v3/time"
+	ret, err := HttpGet(hbpro.httpClient, url)
+	if err != nil {
+		return 0, err
+	}
+	data, ok := ret["serverTime"].(int64)
+	if !ok {
+		return 0, err
+	}
+	return data, nil
+}

@@ -139,3 +139,7 @@ func TestHuobiPro_GetCurrenciesPrecision(t *testing.T) {
 	//return
 	t.Log(hbpro.GetCurrenciesPrecision())
 }
+
+func TestHuobiPro_GetTimestamp(t *testing.T) {
+	t.Log(hbpro.GetTimestamp())
+}
