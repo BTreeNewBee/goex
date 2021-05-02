@@ -21,7 +21,7 @@ const (
 	//API_V3       = API_BASE_URL + "api/v3/"
 
 	TICKER_URI             = "ticker/24hr?symbol=%s"
-	TICKER_PRICE_URL       = "ticker/price "
+	TICKER_PRICE_URL       = "ticker/price"
 	TICKERS_URI            = "ticker/allBookTickers"
 	DEPTH_URI              = "depth?symbol=%s&limit=%d"
 	ACCOUNT_URI            = "account?"
