@@ -683,8 +683,8 @@ func (bn *Binance) GetAllCurrencyPair() ([]CurrencyPair, error) {
 	}
 	var currencyPairs []CurrencyPair
 	for _, e := range respArray {
-		pair := e.(map[string]string)
-		symbol := pair["symbol"]
+		pair := e.(map[string]interface{})
+		symbol := pair["symbol"].(string)
 		if !endWith(symbol, "USDT") {
 			continue
 		}
@@ -697,9 +697,9 @@ func (bn *Binance) GetAllCurrencyPair() ([]CurrencyPair, error) {
 	return currencyPairs, nil
 }
 
-func (hbpro *Binance) GetTimestamp() (int64, error) {
-	url := hbpro.baseUrl + "/api/v3/time"
-	ret, err := HttpGet(hbpro.httpClient, url)
+func (bn *Binance) GetTimestamp() (int64, error) {
+	url := bn.baseUrl + "/api/v3/time"
+	ret, err := HttpGet(bn.httpClient, url)
 	if err != nil {
 		return 0, err
 	}

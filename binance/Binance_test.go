@@ -11,7 +11,7 @@ import (
 var ba = NewWithConfig(
 	&goex.APIConfig{
 		HttpClient: http.DefaultClient,
-		Endpoint:   "https://api.binancezh.pro",
+		Endpoint:   "https://api.binance.com",
 	})
 
 func TestBinance_GetTicker(t *testing.T) {
@@ -96,4 +96,8 @@ func TestBinance_GetOrderHistorys(t *testing.T) {
 
 func TestBinance_GetTimestamp(t *testing.T) {
 	t.Log(ba.GetTimestamp())
+}
+
+func TestBinance_GetAllCurrencyPair(t *testing.T) {
+	t.Log(ba.GetAllCurrencyPair())
 }
