@@ -15,7 +15,8 @@ type HbdmLinearSwap struct {
 }
 
 const (
-	linearAccountApiPath = "/linear-swap-api/v1/swap_account_info"
+	linearAccountApiPath      = "/linear-swap-api/v1/swap_account_info"
+	linearCrossAccountApiPath = "/linear-swap-api/v1/swap_cross_account_info"
 )
 
 func NewHbdmLinearSwap(c *APIConfig) *HbdmLinearSwap {
@@ -69,6 +70,23 @@ func (swap *HbdmLinearSwap) GetFutureUserinfo(currencyPair ...CurrencyPair) (*Fu
 
 	for _, acc := range accountInfoResponse {
 		currency := NewCurrency(acc.Symbol, "")
+		futureAccount.FutureSubAccounts[currency] = FutureSubAccount{
+			Currency:      currency,
+			AccountRights: acc.MarginBalance,
+			KeepDeposit:   acc.MarginPosition,
+			ProfitReal:    acc.ProfitReal,
+			ProfitUnreal:  acc.ProfitUnreal,
+			RiskRate:      acc.RiskRate,
+		}
+	}
+
+	err = swap.base.doRequest(linearCrossAccountApiPath, &url.Values{}, &accountInfoResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, acc := range accountInfoResponse {
+		currency := NewCurrency("USDT", "")
 		futureAccount.FutureSubAccounts[currency] = FutureSubAccount{
 			Currency:      currency,
 			AccountRights: acc.MarginBalance,
