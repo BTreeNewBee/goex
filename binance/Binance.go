@@ -21,6 +21,7 @@ const (
 	//API_V3       = API_BASE_URL + "api/v3/"
 
 	TICKER_URI             = "ticker/24hr?symbol=%s"
+	TICKER_PRICE_URL       = "ticker/price "
 	TICKERS_URI            = "ticker/allBookTickers"
 	DEPTH_URI              = "depth?symbol=%s&limit=%d"
 	ACCOUNT_URI            = "account?"
@@ -674,8 +675,26 @@ func (bn *Binance) adaptOrder(currencyPair CurrencyPair, orderMap map[string]int
 	}
 }
 
-func (hbpro *Binance) GetAllCurrencyPair() ([]CurrencyPair, error) {
-	return nil, errors.New("not implement")
+func (bn *Binance) GetAllCurrencyPair() ([]CurrencyPair, error) {
+	path := bn.apiV3 + TICKER_PRICE_URL
+	respArray, err := HttpGet3(bn.httpClient, path, map[string]string{"X-MBX-APIKEY": bn.accessKey})
+	if err != nil {
+		return nil, err
+	}
+	var currencyPairs []CurrencyPair
+	for _, e := range respArray {
+		pair := e.(map[string]string)
+		symbol := pair["symbol"]
+		if !endWith(symbol, "USDT") {
+			continue
+		}
+		symbol = symbol[0 : len(symbol)-4]
+		var currencyPair CurrencyPair
+		baseCurrency := NewCurrency(symbol, "")
+		currencyPair = NewCurrencyPair(baseCurrency, USDT)
+		currencyPairs = append(currencyPairs, currencyPair)
+	}
+	return currencyPairs, nil
 }
 
 func (hbpro *Binance) GetTimestamp() (int64, error) {
@@ -689,4 +708,8 @@ func (hbpro *Binance) GetTimestamp() (int64, error) {
 		return 0, err
 	}
 	return data, nil
+}
+
+func endWith(src string, end string) bool {
+	return src[len(src)-4:] == end[:]
 }
