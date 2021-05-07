@@ -320,14 +320,20 @@ func (bn *Binance) placeOrder(amount, price string, pair CurrencyPair, orderType
 	params.Set("side", orderSide)
 	params.Set("type", orderType)
 	params.Set("newOrderRespType", "ACK")
-	params.Set("quantity", amount)
 
 	switch orderType {
 	case "LIMIT":
 		params.Set("timeInForce", "GTC")
 		params.Set("price", price)
+		//通过买入(或卖出)想要花费(或获取)的数量
+		params.Set("quantity", amount)
 	case "MARKET":
 		params.Set("newOrderRespType", "RESULT")
+		//这个参数明确的是通过买入(或卖出)想要花费(或获取)的报价资产数量
+		//以BTCUSDT为例, quoteOrderQty=100:
+		//    下买单的时候, 订单会尽可能的买进价值100USDT的BTC.
+		//    下卖单的时候, 订单会尽可能的卖出价值100USDT的BTC.
+		params.Set("quoteOrderQty", amount)
 	}
 
 	bn.buildParamsSigned(&params)
