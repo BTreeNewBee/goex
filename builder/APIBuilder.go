@@ -8,6 +8,8 @@ import (
 	"github.com/BTreeNewBee/goex/binance"
 	"github.com/BTreeNewBee/goex/bitmex"
 	"github.com/BTreeNewBee/goex/coinbene"
+	"github.com/BTreeNewBee/goex/gateio"
+
 	//"github.com/BTreeNewBee/goex/coin58"
 	"net"
 	"net/http"
@@ -211,6 +213,13 @@ func (builder *APIBuilder) Build(exName string) (api API) {
 			Endpoint:     builder.endPoint,
 			ApiKey:       builder.apiKey,
 			ApiSecretKey: builder.secretkey})
+	case GATEIO:
+		//_api = binance.New(builder.client, builder.apiKey, builder.secretkey)
+		_api = gateio.NewGateioWithConfig(&APIConfig{
+			HttpClient:   builder.client,
+			Endpoint:     builder.endPoint,
+			ApiKey:       builder.apiKey,
+			ApiSecretKey: builder.secretkey})
 	//case BITTREX:
 	//	_api = bittrex.New(builder.client, builder.apiKey, builder.secretkey)
 	//case BITHUMB:
@@ -341,7 +350,6 @@ func (builder *APIBuilder) BuildLinearFuture(exName string) (api FutureRestAPI) 
 		return nil
 	}
 }
-
 
 func (builder *APIBuilder) BuildSpotWs(exName string) (SpotWsApi, error) {
 	switch exName {
