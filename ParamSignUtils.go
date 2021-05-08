@@ -33,6 +33,15 @@ func GetSHA(text string) (string, error) {
 	return hex.EncodeToString(sha.Sum(nil)), nil
 }
 
+func GetSHA512(text string) (string, error) {
+	sha := sha512.New()
+	_, err := sha.Write([]byte(text))
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(sha.Sum(nil)), nil
+}
+
 func GetParamHmacSHA256Sign(secret, params string) (string, error) {
 	mac := hmac.New(sha256.New, []byte(secret))
 	_, err := mac.Write([]byte(params))
