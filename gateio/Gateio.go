@@ -463,7 +463,7 @@ func (gateio *Gateio) GetDepth(size int, currency CurrencyPair) (*Depth, error) 
 
 //倒序
 func (gateio *Gateio) GetKlineRecords(currency CurrencyPair, period KlinePeriod, size int, optional ...OptionalParameter) ([]Kline, error) {
-	url := gateio.baseUrl + "/spot/candlesticks?interval=%s&limit=%d&currency_pair=%s"
+	url := gateio.baseUrl + "/api/v4/spot/candlesticks?interval=%s&limit=%d&currency_pair=%s"
 	symbol := strings.ToLower(currency.AdaptUsdToUsdt().ToSymbol("_"))
 	periodS, isOk := _INERNAL_KLINE_PERIOD_CONVERTER[period]
 	if isOk != true {
@@ -652,7 +652,7 @@ func (gateio *Gateio) GetCurrenciesPrecision() ([]interface{}, error) {
 }
 
 func (gateio *Gateio) GetAllCurrencyPair() ([]CurrencyPair, error) {
-	url := gateio.baseUrl + "/spot/currency_pairs"
+	url := gateio.baseUrl + "/api/v4/spot/currency_pairs"
 
 	ret, err := HttpGet3(gateio.httpClient, url, map[string]string{})
 	if err != nil {
