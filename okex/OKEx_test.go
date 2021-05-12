@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
-	"time"
 )
 
 func init() {
@@ -15,7 +14,7 @@ func init() {
 
 //
 var config2 = &goex.APIConfig{
-	Endpoint:   "https://www.okex.me",
+	Endpoint:   "https://www.okex.com",
 	HttpClient: http.DefaultClient,
 }
 
@@ -136,8 +135,7 @@ func TestOKExFuture_GetRate(t *testing.T) {
 }
 
 func TestOKExFuture_GetKlineRecords(t *testing.T) {
-	since := time.Now().Add(-24 * time.Hour).Unix()
-	kline, err := okex.OKExFuture.GetKlineRecords(goex.QUARTER_CONTRACT, goex.BTC_USD, goex.KLINE_PERIOD_4H, 0, int(since))
+	kline, err := okex.OKExFuture.GetKlineRecords(goex.QUARTER_CONTRACT, goex.BTC_USD, goex.KLINE_PERIOD_4H, 0)
 	assert.Nil(t, err)
 	for _, k := range kline {
 		t.Logf("%+v", k.Kline)
@@ -239,4 +237,8 @@ func TestOKExSpot_GetOrderHistorys(t *testing.T) {
 		t.FailNow()
 	}
 	t.Log(len(orders))
+}
+
+func TestOKExSpot_GetAllCurrencyPair(t *testing.T) {
+	t.Log(okex.OKExSpot.GetAllCurrencyPair())
 }

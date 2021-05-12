@@ -517,9 +517,9 @@ func (ok *OKExSpot) GetAllCurrencyPair() ([]CurrencyPair, error) {
 	urlPath := "/api/spot/v3/instruments"
 
 	var response []struct {
-		InstrumentId string `json:"instrument_id,string"`
-		Base         string `json:"base_currency,string"`
-		Quote        string `json:"quote_currency,string"`
+		InstrumentId string `json:"instrument_id"`
+		Base         string `json:"base_currency"`
+		Quote        string `json:"quote_currency"`
 	}
 	err := ok.DoRequest("GET", urlPath, "", &response)
 	if err != nil {
