@@ -512,6 +512,35 @@ func (ok *OKExSpot) GetTrades(currencyPair CurrencyPair, since int64) ([]Trade, 
 	return trades, nil
 }
 
+func (ok *OKExSpot) GetAllCurrencyPair() ([]CurrencyPair, error) {
+
+	urlPath := "/api/spot/v3/instruments"
+
+	var response []struct {
+		InstrumentId string `json:"instrument_id,string"`
+		Base         string `json:"base_currency,string"`
+		Quote        string `json:"quote_currency,string"`
+	}
+	err := ok.DoRequest("GET", urlPath, "", &response)
+	if err != nil {
+		return nil, err
+	}
+
+	var currencyPairs []CurrencyPair
+	for _, v := range response {
+		var currencyPair CurrencyPair
+		baseCurrency := NewCurrency(v.Base, "")
+		quoteCurrency := NewCurrency(v.Quote, "")
+		currencyPair = NewCurrencyPair(baseCurrency, quoteCurrency)
+		currencyPairs = append(currencyPairs, currencyPair)
+	}
+	return currencyPairs, nil
+}
+
+func (ok *OKExSpot) GetTimestamp() (int64, error) {
+	return 0, errors.NotImplemented("no implemented")
+}
+
 type OKExSpotSymbol struct {
 	BaseCurrency    string
 	QuoteCurrency   string

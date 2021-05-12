@@ -126,7 +126,7 @@ var (
 const (
 	KUCOIN           = "kucoin.com"
 	OKCOIN_COM       = "okcoin.com"
-	OKEX             = "okex.com"
+	OKEX             = "okex"
 	OKEX_V3          = "okex.com_v3"
 	OKEX_FUTURE      = "okex.com_future"
 	OKEX_SWAP        = "okex.com_swap"
@@ -159,6 +159,7 @@ const (
 	COINBENE         = "coinbene.com"
 	ATOP             = "a.top"
 	BITGET_SWAP      = "bitget_swap"
+	MXC              = "抹茶"
 )
 
 const (

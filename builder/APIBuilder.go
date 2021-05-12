@@ -194,14 +194,14 @@ func (builder *APIBuilder) Build(exName string) (api API) {
 			Endpoint:     builder.endPoint,
 			ApiKey:       builder.apiKey,
 			ApiSecretKey: builder.secretkey})
-	//case OKEX_V3, OKEX:
-	//	_api = okex.NewOKEx(&APIConfig{
-	//		HttpClient:    builder.client,
-	//		ApiKey:        builder.apiKey,
-	//		ApiSecretKey:  builder.secretkey,
-	//		ApiPassphrase: builder.apiPassphrase,
-	//		Endpoint:      builder.endPoint,
-	//	})
+	case OKEX_V3, OKEX:
+		_api = okex.NewOKEx(&APIConfig{
+			HttpClient:    builder.client,
+			ApiKey:        builder.apiKey,
+			ApiSecretKey:  builder.secretkey,
+			ApiPassphrase: builder.apiPassphrase,
+			Endpoint:      builder.endPoint,
+		})
 	//case BITFINEX:
 	//	_api = bitfinex.New(builder.client, builder.apiKey, builder.secretkey)
 	//case KRAKEN:
