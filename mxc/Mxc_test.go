@@ -27,8 +27,8 @@ var httpProxyClient = &http.Client{
 }
 
 var (
-	apikey    = "mx045uwJZPAPdiL3oK"
-	secretkey = "f180faece58d44908b74766f8f8c1540"
+	apikey    = ""
+	secretkey = ""
 )
 
 //

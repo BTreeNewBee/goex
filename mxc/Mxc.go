@@ -565,8 +565,7 @@ func (mxc *Mxc) buildSign2(reqParameter string, param *url.Values) error {
 }
 
 func (mxc *Mxc) buildSign(reqParameter string, headers *(map[string]string)) error {
-	timestampStr := strconv.Itoa(int(time.Now().Unix()))
-	fmt.Println(timestampStr)
+	timestampStr := strconv.Itoa(int(time.Now().UnixNano() / 1e6))
 	payload := fmt.Sprintf("%s%s%s", mxc.accessKey, timestampStr, reqParameter)
 	sign, _ := GetParamHmacSHA256Sign(mxc.secretKey, payload)
 	(*headers)["Request-Time"] = timestampStr
