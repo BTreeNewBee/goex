@@ -9,6 +9,7 @@ import (
 	"github.com/BTreeNewBee/goex/bitmex"
 	"github.com/BTreeNewBee/goex/coinbene"
 	"github.com/BTreeNewBee/goex/gateio"
+	"github.com/BTreeNewBee/goex/mxc"
 
 	//"github.com/BTreeNewBee/goex/coin58"
 	"net"
@@ -216,6 +217,13 @@ func (builder *APIBuilder) Build(exName string) (api API) {
 	case GATEIO:
 		//_api = binance.New(builder.client, builder.apiKey, builder.secretkey)
 		_api = gateio.NewGateioWithConfig(&APIConfig{
+			HttpClient:   builder.client,
+			Endpoint:     builder.endPoint,
+			ApiKey:       builder.apiKey,
+			ApiSecretKey: builder.secretkey})
+	case MXC:
+		//_api = binance.New(builder.client, builder.apiKey, builder.secretkey)
+		_api = mxc.NewMxcWithConfig(&APIConfig{
 			HttpClient:   builder.client,
 			Endpoint:     builder.endPoint,
 			ApiKey:       builder.apiKey,
