@@ -673,8 +673,10 @@ func (mxc *Mxc) GetAllCurrencyPair() ([]CurrencyPair, error) {
 	if err != nil {
 		return nil, err
 	}
-	respArray := ret["data"].([]interface{})
-
+	respArray, ok := ret["data"].([]interface{})
+	if !ok {
+		return nil, errors.New("resp data error")
+	}
 	var currencyPairs []CurrencyPair
 	for _, e := range respArray {
 		pair := e.(map[string]interface{})
