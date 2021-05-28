@@ -103,6 +103,20 @@ func (s *SpotWs) SubscribeTicker(pair goex.CurrencyPair) error {
 	})
 }
 
+func (s *SpotWs) UnSubscribeTicker(pair goex.CurrencyPair) error {
+	defer func() {
+		s.reqId++
+	}()
+
+	s.connect()
+
+	return s.c.Subscribe(req{
+		Method: "UNSUBSCRIBE",
+		Params: []string{pair.ToLower().ToSymbol("") + "@ticker"},
+		Id:     s.reqId,
+	})
+}
+
 func (s *SpotWs) SubscribeTrade(pair goex.CurrencyPair) error {
 	panic("implement me")
 }

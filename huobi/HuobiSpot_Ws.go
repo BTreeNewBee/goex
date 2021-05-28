@@ -70,8 +70,19 @@ func (ws *SpotWs) SubscribeTicker(pair CurrencyPair) error {
 		return errors.New("please set ticker call back func")
 	}
 	return ws.subscribe(map[string]interface{}{
-		"id":  "spot.ticker",
+		"id":  fmt.Sprintf("spot.ticker.%s", pair.ToLower().ToSymbol("")),
 		"sub": fmt.Sprintf("market.%s.detail", pair.ToLower().ToSymbol("")),
+	})
+	return nil
+}
+
+func (ws *SpotWs) UnSubscribeTicker(pair CurrencyPair) error {
+	if ws.tickerCallback == nil {
+		return errors.New("please set ticker call back func")
+	}
+	return ws.subscribe(map[string]interface{}{
+		"id":    fmt.Sprintf("spot.ticker.%s", pair.ToLower().ToSymbol("")),
+		"unsub": fmt.Sprintf("market.%s.detail", pair.ToLower().ToSymbol("")),
 	})
 	return nil
 }

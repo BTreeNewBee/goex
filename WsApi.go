@@ -29,6 +29,8 @@ type SpotWsApi interface {
 	SubscribeTicker(pair CurrencyPair) error
 	SubscribeTrade(pair CurrencyPair) error
 
+	UnSubscribeTicker(pair CurrencyPair) error
+
 	//Login() error
 	//SubscribeOrder(pair CurrencyPair) error
 	//SubscribeAccount(pair CurrencyPair) error
