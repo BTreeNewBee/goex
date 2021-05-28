@@ -131,7 +131,7 @@ const (
 	OKEX_FUTURE      = "okex.com_future"
 	OKEX_SWAP        = "okex.com_swap"
 	HUOBI            = "huobi.com"
-	HUOBI_PRO        = "火币pro"
+	HUOBI_PRO        = "火币"
 	BITSTAMP         = "bitstamp.net"
 	KRAKEN           = "kraken.com"
 	ZB               = "zb.com"

@@ -76,6 +76,10 @@ func (ws *SpotWs) SubscribeTicker(pair CurrencyPair) error {
 	return nil
 }
 
+func (ws *SpotWs) GetExchangeName() string {
+	return HUOBI_PRO
+}
+
 func (ws *SpotWs) UnSubscribeTicker(pair CurrencyPair) error {
 	if ws.tickerCallback == nil {
 		return errors.New("please set ticker call back func")

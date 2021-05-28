@@ -117,6 +117,10 @@ func (s *SpotWs) UnSubscribeTicker(pair goex.CurrencyPair) error {
 	})
 }
 
+func (s *SpotWs) GetExchangeName() string {
+	return goex.BINANCE
+}
+
 func (s *SpotWs) SubscribeTrade(pair goex.CurrencyPair) error {
 	panic("implement me")
 }
