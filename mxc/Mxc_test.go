@@ -51,8 +51,9 @@ func TestGateio_GetKLine(t *testing.T) {
 	t.Log(mxc.GetKlineRecords(goex.BTC_USDT, goex.KLINE_PERIOD_1DAY, 2))
 }
 
-func TestGateio_GetAccount(t *testing.T) {
-	t.Log(mxc.GetTimestamp())
+func TestMxc_MarketBuy(t *testing.T) {
+	t.Log(mxc.GetAccount())
+	t.Log(mxc.MarketSell("100", "0.012", goex.BTC_USDT))
 	t.Log(mxc.GetAccount())
 }
 

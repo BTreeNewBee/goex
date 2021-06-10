@@ -106,7 +106,7 @@ func (mxc *Mxc) GetAccount() (*Account, error) {
 	headers := map[string]string{}
 	mxc.buildSign("", &headers)
 	//mxc.buildSign2("", params)
-	fmt.Println(mxc.GetTimestamp())
+	//fmt.Println(mxc.GetTimestamp())
 	//log.Println(mxc.baseUrl + path + "?" + params.Encode())
 
 	respmap, err := HttpGet2(mxc.httpClient, mxc.baseUrl+path, headers)
@@ -135,98 +135,53 @@ func (mxc *Mxc) GetAccount() (*Account, error) {
 }
 
 func (mxc *Mxc) placeOrder(amount, price string, pair CurrencyPair, orderType string) (string, error) {
-	//symbol := mxc.Symbols[pair.ToLower().ToSymbol("")]
-	//
-	//path := "/v1/order/orders/place"
-	//params := url.Values{}
-	//params.Set("account-id", mxc.accountId)
-	//params.Set("client-order-id", GenerateOrderClientId(32))
-	//params.Set("amount", FloatToString(ToFloat64(amount), int(symbol.AmountPrecision)))
-	//params.Set("symbol", pair.AdaptUsdToUsdt().ToLower().ToSymbol(""))
-	//params.Set("type", orderType)
-	//
-	//switch orderType {
-	//case "buy-limit", "sell-limit":
-	//	params.Set("price", FloatToString(ToFloat64(price), int(symbol.PricePrecision)))
-	//}
-	//
+	symbol := pair.ToLower().ToSymbol("_")
+
+	path := "/open/api/v2/order/place"
+	params := url.Values{}
+	params.Set("symbol", symbol)
+	params.Set("client_order_id", GenerateOrderClientId(32))
+	params.Set("order_type", "LIMIT_ORDER")
+	params.Set("trade_type", orderType)
+	params.Set("quantity", amount)
+	params.Set("price", price)
+
+	paramsToJson := mxc.toJson(params)
+	headers := map[string]string{}
+
+	mxc.buildSign(paramsToJson, &headers)
+
 	//mxc.buildPostForm("POST", path, &params)
-	//
-	//resp, err := HttpPostForm3(mxc.httpClient, mxc.baseUrl+path+"?"+params.Encode(), mxc.toJson(params),
-	//	map[string]string{"Content-Type": "application/json", "Accept-Language": "zh-cn"})
-	//if err != nil {
-	//	return "", err
-	//}
-	//
-	//respmap := make(map[string]interface{})
-	//err = json.Unmarshal(resp, &respmap)
-	//if err != nil {
-	//	return "", err
-	//}
-	//
-	//if respmap["status"].(string) != "ok" {
-	//	return "", errors.New(respmap["err-code"].(string))
-	//}
+
+	resp, err := HttpPostForm3(mxc.httpClient, mxc.baseUrl+path, paramsToJson,
+		map[string]string{"Content-Type": "application/json", "Accept-Language": "zh-cn"})
+	if err != nil {
+		return "", err
+	}
+
+	respmap := make(map[string]interface{})
+	err = json.Unmarshal(resp, &respmap)
+	if err != nil {
+		return "", err
+	}
+
+	if respmap["code"].(int) != 200 {
+		return "", errors.New(respmap["code"].(string))
+	}
 
 	return "", nil
 }
 
 func (mxc *Mxc) LimitBuy(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
-	orderTy := "buy-limit"
-	if len(opt) > 0 {
-		switch opt[0] {
-		case PostOnly:
-			orderTy = "buy-limit-maker"
-		case Ioc:
-			orderTy = "buy-ioc"
-		case Fok:
-			orderTy = "buy-limit-fok"
-		default:
-			Log.Error("limit order optional parameter error ,opt= ", opt[0])
-		}
-	}
-	orderId, err := mxc.placeOrder(amount, price, currency, orderTy)
-	if err != nil {
-		return nil, err
-	}
-	return &Order{
-		Currency: currency,
-		OrderID:  ToInt(orderId),
-		OrderID2: orderId,
-		Amount:   ToFloat64(amount),
-		Price:    ToFloat64(price),
-		Side:     BUY}, nil
+	return nil, errors.New("unsupported operation!!!")
 }
 
 func (mxc *Mxc) LimitSell(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
-	orderTy := "sell-limit"
-	if len(opt) > 0 {
-		switch opt[0] {
-		case PostOnly:
-			orderTy = "sell-limit-maker"
-		case Ioc:
-			orderTy = "sell-ioc"
-		case Fok:
-			orderTy = "sell-limit-fok"
-		default:
-			Log.Error("limit order optional parameter error ,opt= ", opt[0])
-		}
-	}
-	orderId, err := mxc.placeOrder(amount, price, currency, orderTy)
-	if err != nil {
-		return nil, err
-	}
-	return &Order{
-		Currency: currency,
-		OrderID:  ToInt(orderId),
-		OrderID2: orderId,
-		Amount:   ToFloat64(amount),
-		Price:    ToFloat64(price),
-		Side:     SELL}, nil
+	return nil, errors.New("unsupported operation!!!")
 }
 
 func (mxc *Mxc) MarketBuy(amount, price string, currency CurrencyPair) (*Order, error) {
-	orderId, err := mxc.placeOrder(amount, price, currency, "buy-market")
+	orderId, err := mxc.placeOrder(amount, price, currency, "BID")
 	if err != nil {
 		return nil, err
 	}
@@ -240,7 +195,7 @@ func (mxc *Mxc) MarketBuy(amount, price string, currency CurrencyPair) (*Order, 
 }
 
 func (mxc *Mxc) MarketSell(amount, price string, currency CurrencyPair) (*Order, error) {
-	orderId, err := mxc.placeOrder(amount, price, currency, "sell-market")
+	orderId, err := mxc.placeOrder(amount, price, currency, "ASK")
 	if err != nil {
 		return nil, err
 	}
