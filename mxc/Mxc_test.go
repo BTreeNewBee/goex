@@ -51,9 +51,29 @@ func TestGateio_GetKLine(t *testing.T) {
 	t.Log(mxc.GetKlineRecords(goex.BTC_USDT, goex.KLINE_PERIOD_1DAY, 2))
 }
 
+func TestMxc_GetUnfinishOrders(t *testing.T) {
+	currency := goex.NewCurrencyPair(
+		goex.NewCurrency("DOGGY", ""), goex.USDT,
+	)
+	t.Log(mxc.GetUnfinishOrders(currency))
+}
+
+func TestMxc_GetOneOrder(t *testing.T) {
+	currency := goex.NewCurrencyPair(
+		goex.NewCurrency("DOGGY", ""), goex.USDT,
+	)
+	t.Log(mxc.GetOneOrder("8cfd2b42aaf44d5db3e0108f8928031a", currency))
+}
+
 func TestMxc_MarketBuy(t *testing.T) {
 	t.Log(mxc.GetAccount())
-	t.Log(mxc.MarketSell("100", "0.012", goex.BTC_USDT))
+	currency := goex.NewCurrencyPair(
+		goex.NewCurrency("DOGGY", ""), goex.USDT,
+	)
+	buy, err := mxc.MarketBuy("2000", "0.003", currency)
+	t.Log(buy)
+	t.Log(err)
+	//t.Log(mxc.CancelOrder(buy.OrderID2, currency))
 	t.Log(mxc.GetAccount())
 }
 

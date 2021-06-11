@@ -226,6 +226,10 @@ func HttpDeleteForm(client *http.Client, reqUrl string, postData url.Values, hea
 	return NewHttpRequest(client, "DELETE", reqUrl, postData.Encode(), headers)
 }
 
+func HttpDeleteForm3(client *http.Client, reqUrl string, postData string, headers map[string]string) ([]byte, error) {
+	return NewHttpRequest(client, "DELETE", reqUrl, postData, headers)
+}
+
 func HttpPut(client *http.Client, reqUrl string, postData url.Values, headers map[string]string) ([]byte, error) {
 	if headers == nil {
 		headers = map[string]string{}

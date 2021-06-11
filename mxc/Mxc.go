@@ -154,7 +154,7 @@ func (mxc *Mxc) placeOrder(amount, price string, pair CurrencyPair, orderType st
 	//mxc.buildPostForm("POST", path, &params)
 
 	resp, err := HttpPostForm3(mxc.httpClient, mxc.baseUrl+path, paramsToJson,
-		map[string]string{"Content-Type": "application/json", "Accept-Language": "zh-cn"})
+		headers)
 	if err != nil {
 		return "", err
 	}
@@ -165,11 +165,11 @@ func (mxc *Mxc) placeOrder(amount, price string, pair CurrencyPair, orderType st
 		return "", err
 	}
 
-	if respmap["code"].(int) != 200 {
+	if respmap["code"].(float64) != 200 {
 		return "", errors.New(respmap["code"].(string))
 	}
 
-	return "", nil
+	return respmap["data"].(string), nil
 }
 
 func (mxc *Mxc) LimitBuy(amount, price string, currency CurrencyPair, opt ...LimitOrderOptionalParameter) (*Order, error) {
@@ -210,92 +210,129 @@ func (mxc *Mxc) MarketSell(amount, price string, currency CurrencyPair) (*Order,
 
 func (mxc *Mxc) parseOrder(ordmap map[string]interface{}) Order {
 	ord := Order{
-		Cid:        fmt.Sprint(ordmap["client-order-id"]),
-		OrderID:    ToInt(ordmap["id"]),
-		OrderID2:   fmt.Sprint(ToInt(ordmap["id"])),
-		Amount:     ToFloat64(ordmap["amount"]),
+		Cid:        fmt.Sprint(ordmap["id"]),
+		OrderID:    0,
+		OrderID2:   fmt.Sprint(ordmap["id"]),
+		Amount:     ToFloat64(ordmap["quantity"]),
 		Price:      ToFloat64(ordmap["price"]),
-		DealAmount: ToFloat64(ordmap["field-amount"]),
-		Fee:        ToFloat64(ordmap["field-fees"]),
-		OrderTime:  ToInt(ordmap["created-at"]),
+		DealAmount: ToFloat64(ordmap["deal_quantity"]),
+		Fee:        0,
+		OrderTime:  ToInt(ordmap["create_time"]),
+		AvgPrice:   ToFloat64(ordmap["price"]),
 	}
 
 	state := ordmap["state"].(string)
 	switch state {
-	case "submitted", "pre-submitted":
+	case "NEW":
 		ord.Status = ORDER_UNFINISH
-	case "filled":
+	case "FILLED":
 		ord.Status = ORDER_FINISH
-	case "partial-filled":
+	case "PARTIALLY_FILLED":
 		ord.Status = ORDER_PART_FINISH
-	case "canceled", "partial-canceled":
+	case "CANCELED", "PARTIALLY_CANCELED":
 		ord.Status = ORDER_CANCEL
 	default:
 		ord.Status = ORDER_UNFINISH
 	}
 
-	if ord.DealAmount > 0.0 {
-		ord.AvgPrice = ToFloat64(ordmap["field-cash-amount"]) / ord.DealAmount
-	}
-
 	typeS := ordmap["type"].(string)
 	switch typeS {
-	case "buy-limit":
+	case "BID":
 		ord.Side = BUY
-	case "buy-market":
-		ord.Side = BUY_MARKET
-	case "sell-limit":
+	case "ASK":
 		ord.Side = SELL
-	case "sell-market":
-		ord.Side = SELL_MARKET
 	}
 	return ord
 }
 
-func (mxc *Mxc) GetOneOrder(orderId string, currency CurrencyPair) (*Order, error) {
-	path := "/v1/order/orders/" + orderId
+func (mxc *Mxc) GetOneOrder(orderId string, pair CurrencyPair) (*Order, error) {
+	path := "/open/api/v2/order/query"
+
 	params := url.Values{}
-	mxc.buildPostForm("GET", path, &params)
-	respmap, err := HttpGet(mxc.httpClient, mxc.baseUrl+path+"?"+params.Encode())
+	params.Set("order_ids", orderId)
+	//params.Set("client_order_ids", orderId)
+
+	headers := map[string]string{}
+	encode := params.Encode()
+	mxc.buildSign(encode, &headers)
+
+	respmap, err := HttpGet2(mxc.httpClient, mxc.baseUrl+path+"?"+encode,
+		headers)
+
 	if err != nil {
 		return nil, err
 	}
 
-	if respmap["status"].(string) != "ok" {
-		return nil, errors.New(respmap["err-code"].(string))
+	if respmap["code"].(float64) != 200 {
+		return nil, errors.New(respmap["code"].(string))
 	}
 
-	datamap := respmap["data"].(map[string]interface{})
-	order := mxc.parseOrder(datamap)
-	order.Currency = currency
+	datamap := respmap["data"].([]interface{})
+	var orders []Order
+	for _, v := range datamap {
+		ordmap := v.(map[string]interface{})
+		ord := mxc.parseOrder(ordmap)
+		ord.Currency = pair
+		orders = append(orders, ord)
+	}
 
-	return &order, nil
+	if len(orders) < 1 {
+		return nil, nil
+	}
+
+	return &orders[0], nil
 }
 
-func (mxc *Mxc) GetUnfinishOrders(currency CurrencyPair) ([]Order, error) {
-	return mxc.getOrders(currency, OptionalParameter{}.
-		Optional("states", "pre-submitted,submitted,partial-filled").
-		Optional("size", "100"))
+func (mxc *Mxc) GetUnfinishOrders(pair CurrencyPair) ([]Order, error) {
+	path := "/open/api/v2/order/open_orders"
+	params := url.Values{}
+	params.Set("symbol", strings.ToLower(pair.AdaptUsdToUsdt().ToSymbol("_")))
+
+	headers := map[string]string{}
+	mxc.buildSign(params.Encode(), &headers)
+	respmap, err := HttpGet2(mxc.httpClient, fmt.Sprintf("%s%s?%s", mxc.baseUrl, path, params.Encode()), headers)
+	if err != nil {
+		return nil, err
+	}
+
+	if respmap["code"].(float64) != 200 {
+		return nil, errors.New(FloatToString(respmap["code"].(float64), 64))
+	}
+
+	datamap := respmap["data"].([]interface{})
+	var orders []Order
+	for _, v := range datamap {
+		ordmap := v.(map[string]interface{})
+		ord := mxc.parseOrder(ordmap)
+		ord.Currency = pair
+		orders = append(orders, ord)
+	}
+
+	return orders, nil
 }
 
 func (mxc *Mxc) CancelOrder(orderId string, currency CurrencyPair) (bool, error) {
-	path := fmt.Sprintf("/v1/order/orders/%s/submitcancel", orderId)
-	params := url.Values{}
-	mxc.buildPostForm("POST", path, &params)
-	resp, err := HttpPostForm3(mxc.httpClient, mxc.baseUrl+path+"?"+params.Encode(), mxc.toJson(params),
-		map[string]string{"Content-Type": "application/json", "Accept-Language": "zh-cn"})
-	if err != nil {
-		return false, err
-	}
+	path := "/open/api/v2/order/cancel"
 
-	var respmap map[string]interface{}
+	params := url.Values{}
+	params.Set("order_ids", orderId)
+	//params.Set("client_order_ids", orderId)
+
+	headers := map[string]string{}
+	encode := params.Encode()
+	mxc.buildSign(params.Encode(), &headers)
+
+	resp, err := HttpDeleteForm(mxc.httpClient, mxc.baseUrl+path+"?"+encode, url.Values{},
+		headers)
+
+	respmap := make(map[string]interface{})
 	err = json.Unmarshal(resp, &respmap)
 	if err != nil {
 		return false, err
 	}
 
-	if respmap["status"].(string) != "ok" {
-		return false, errors.New(string(resp))
+	if respmap["code"].(float64) != 200 {
+		return false, errors.New(respmap["code"].(string))
 	}
 
 	return true, nil
@@ -323,9 +360,11 @@ type queryOrdersParams struct {
 }
 
 func (mxc *Mxc) getOrders(pair CurrencyPair, optional ...OptionalParameter) ([]Order, error) {
-	path := "/v1/order/orders"
+	path := "/open/api/v2/order/list"
 	params := url.Values{}
 	params.Set("symbol", strings.ToLower(pair.AdaptUsdToUsdt().ToSymbol("")))
+	//params.Set("states",optional["states"].(string))
+	//params.Set("states", strings.ToLower(pair.AdaptUsdToUsdt().ToSymbol("")))
 	MergeOptionalParameter(&params, optional...)
 	Log.Info(params)
 	mxc.buildPostForm("GET", path, &params)
@@ -334,8 +373,8 @@ func (mxc *Mxc) getOrders(pair CurrencyPair, optional ...OptionalParameter) ([]O
 		return nil, err
 	}
 
-	if respmap["status"].(string) != "ok" {
-		return nil, errors.New(respmap["err-code"].(string))
+	if respmap["code"].(float64) != 200 {
+		return nil, errors.New(FloatToString(respmap["code"].(float64), 64))
 	}
 
 	datamap := respmap["data"].([]interface{})
